@@ -28,20 +28,26 @@ public class PacienteService {
     @Autowired
     private PacienteImagenRepository imagenRepository;
 
-    // 🔹 CRUD de Paciente
+    //  CRUD de Paciente
     public List<Paciente> listarTodos() {
         return pacienteRepository.findAll();
     }
 
     public Paciente guardar(Paciente paciente) {
+    boolean existe = pacienteRepository.existsByCedula(paciente.getCedula());
+        if (existe) {
+            throw new IllegalArgumentException("Paciente ya registrado con esa cédula");
+        }
         return pacienteRepository.save(paciente);
     }
-
+    public void eliminarPorId(Long id) {
+        pacienteRepository.deleteById(id);
+    }
     public Paciente obtenerPorId(Long id) {
         return pacienteRepository.findById(id).orElse(null);
     }
 
-    // 🔹 Obtener imágenes de un paciente
+    //  Obtener imágenes de un paciente
     public List<PacienteImagen> obtenerImagenesPorPaciente(Long pacienteId) {
         Paciente paciente = obtenerPorId(pacienteId);
         return (paciente != null) ? imagenRepository.findByPaciente(paciente) : List.of();
@@ -57,7 +63,7 @@ public class PacienteService {
         return imagenRepository.findByPacienteAndFechaSubidaBetween(paciente, desde, hasta);
     }
 
-    // 🔹 Guardar imagen asociada a un paciente
+    //  Guardar imagen asociada a un paciente
     public void guardarImagenPaciente(Long pacienteId, MultipartFile file) throws IOException {
         if (file.isEmpty()) return;
 
@@ -80,7 +86,7 @@ public class PacienteService {
         imagenRepository.save(imagen);
     }
 
-    // 🔹 Obtener todas las imágenes del sistema (por si quieres mostrar en /home)
+    //  Obtener todas las imágenes del sistema (por si quieres mostrar en /home)
     public List<PacienteImagen> obtenerTodasLasImagenes() {
         return imagenRepository.findAll();
     }

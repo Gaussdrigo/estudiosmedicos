@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -42,27 +43,43 @@ public class PacienteController {
         return "pacientes";
     }
 
-    // 🔹 Mostrar formulario para crear nuevo paciente
+    //  Mostrar formulario para crear nuevo paciente
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevo(Model model) {
         model.addAttribute("paciente", new Paciente());
         return "paciente_form";
     }
 
-    // 🔹 Guardar paciente
+    //  Guardar paciente
     @PostMapping("/guardar")
-    public String guardarPaciente(@ModelAttribute Paciente paciente) {
-        pacienteService.guardar(paciente);
+    public String guardarPaciente(@ModelAttribute Paciente paciente, RedirectAttributes redirectAttrs) {
+        try {
+            pacienteService.guardar(paciente);
+            redirectAttrs.addFlashAttribute("msg", "Paciente registrado correctamente ✅");
+        } catch (IllegalArgumentException e) {
+            redirectAttrs.addFlashAttribute("errorMsg", e.getMessage());
+        }
+        return "redirect:/pacientes/nuevo";
+    }
+    //  Eliminar paciente
+    @PostMapping("/{id}/eliminar")
+    public String eliminarPaciente(@PathVariable Long id, RedirectAttributes redirectAttrs) {
+        try {
+            pacienteService.eliminarPorId(id);
+            redirectAttrs.addFlashAttribute("msg", "Paciente eliminado correctamente ✅");
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("msg", "Error al eliminar el paciente ❌");
+        }
         return "redirect:/pacientes";
     }
 
-    // 🔹 Ver imágenes de un paciente específico
+    //  Ver imágenes de un paciente específico
    @GetMapping("/{id}/imagenes")
     public String verImagenesPaciente(@PathVariable Long id, Model model) {
         Paciente paciente = pacienteService.obtenerPorId(id);
         List<PacienteImagen> imagenes = paciente.getImagenes();
 
-        // 🔹 Agrupar imágenes por fecha (solo día, no hora)
+        //  Agrupar imágenes por fecha (solo día, no hora)
         Map<LocalDate, List<PacienteImagen>> imagenesPorFecha = imagenes.stream()
                 .collect(Collectors.groupingBy(img -> img.getFechaSubida().toLocalDate(),
                         TreeMap::new, Collectors.toList())); // TreeMap para ordenar por fecha
@@ -73,7 +90,7 @@ public class PacienteController {
     }
 
 
-    // 🔹 Subir imagen para un paciente
+    //  Subir imagen para un paciente
     @PostMapping("/{id}/imagenes/subir")
     public String subirImagenPaciente(@PathVariable Long id,
             @RequestParam("imagen") MultipartFile imagen,

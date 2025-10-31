@@ -9,4 +9,6 @@ import java.util.List;
 public interface PacienteRepository extends JpaRepository<Paciente, Long> {
     List<Paciente> findByNombreContainingIgnoreCase(String nombre);
     List<Paciente> findByCedulaContaining(String cedula);
+    boolean existsByCedula(String cedula);
+
 }
