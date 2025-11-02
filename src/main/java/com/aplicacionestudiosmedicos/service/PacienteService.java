@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PacienteService {
@@ -45,6 +46,9 @@ public class PacienteService {
     }
     public Paciente obtenerPorId(Long id) {
         return pacienteRepository.findById(id).orElse(null);
+    }
+    public Optional<Paciente> obtenerPorCedula(String cedula) {
+        return pacienteRepository.findByCedula(cedula);
     }
 
     //  Obtener imágenes de un paciente

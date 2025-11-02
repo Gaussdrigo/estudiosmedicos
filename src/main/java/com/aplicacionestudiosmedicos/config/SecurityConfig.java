@@ -35,27 +35,32 @@ public class SecurityConfig {
         return authProvider;
     }
 
-    // ✅ Se declara correctamente el SecurityFilterChain
+    //  Se declara correctamente el SecurityFilterChain
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Para desarrollo, luego activaremos CSRF tokens
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/auth-login", "/css/**", "/js/**", "/uploads/**").permitAll() // permitimos
-                                                                                                                  // login
-                                                                                                                  // y
-                                                                                                                  // estáticos
-                        .anyRequest().authenticated() // protege todo lo demás (incluye /home y /home/subir)
-                )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .permitAll())
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout=true")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll());
+            .csrf(csrf -> csrf.disable()) // Desactivar CSRF solo en desarrollo
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    "/login",
+                    "/auth-login",
+                    "/css/**",
+                    "/js/**",
+                    "/uploads/**",
+                    "/pdfs/**",          // también necesario si servís PDFs
+                    "/consulta/**"       //  hacemos pública la pantalla de consulta
+                ).permitAll()
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .permitAll())
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout=true")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .permitAll());
 
         return http.build();
     }
