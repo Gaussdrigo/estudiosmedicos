@@ -39,78 +39,82 @@
 <body class="bg-light text-center mt-5">
 
     <div class="container">
-    <h2 class="mb-4 text-primary">Consulta de Imágenes del Paciente</h2>
-
-    <!-- Formulario de búsqueda -->
-    <form action="/consulta/buscar" method="get" class="d-flex justify-content-center mb-4">
-        <input type="text" name="cedula" class="form-control w-50 me-2" placeholder="Ingrese cédula del paciente..." required>
-        <button type="submit" class="btn btn-success">Buscar</button>
-    </form>
-
-    <!-- Mostrar datos e imágenes si existen -->
-    <div th:if="${paciente}">
-        <h4 class="text-secondary mb-4" th:text="'Paciente: ' + ${paciente.nombre}"></h4>
-
-        <div th:each="entry, iterStat : ${imagenesPorFecha}" class="mb-4">
-            <!--  Fecha clickable -->
-            <h4 class="fecha-btn" th:attr="data-fecha=${iterStat.index}"
-                th:text="${#temporals.format(entry.key, 'dd/MM/yyyy')}"></h4>
-
-            <!--  Contenedor de imágenes (inicialmente oculto) -->
-            <div class="imagenes-fecha d-none" th:id="'imagenes-' + ${iterStat.index}">
-                <div class="galeria-grid">
-                <div class="card shadow-sm" th:each="img, iter : ${entry.value}">
-                    <img th:src="@{'/' + ${img.rutaArchivo}}" class="card-img-top"
-                        th:attr="data-bs-toggle='modal', data-bs-target='#modalCarrusel-' + ${iterStat.index}"
-                        th:attrappend="data-index=${iter.index}">
-                    <div class="card-body p-2">
-                    <p class="small text-muted" th:text="${img.nombreArchivo}"></p>
-                    </div>
-                </div>
-                </div>
+            <div class="text-end mb-3">
+                <a href="/login" class="btn btn-outline-secondary btn-sm">Iniciar Sesión</a>
             </div>
 
-            <!--  Modal con carrusel -->
-            <div class="modal fade" th:id="'modalCarrusel-' + ${iterStat.index}" tabindex="-1">
-                <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content bg-dark text-white">
-                    <div class="modal-body p-0 position-relative">
-                    <button type="button" class="btn-close btn-close-white position-absolute end-0 m-3" data-bs-dismiss="modal"></button>
-                    <div th:id="'carousel-' + ${iterStat.index}" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                        <div class="carousel-item"
-                            th:each="img2, iter2 : ${entry.value}"
-                            th:classappend="${iter2.index == 0} ? 'active'">
-                            <img th:src="@{'/' + ${img2.rutaArchivo}}" class="d-block w-100"
-                                style="max-height:80vh;object-fit:contain;">
+        <h2 class="mb-4 text-primary">Consulta de Imágenes del Paciente</h2>
+
+        <!-- Formulario de búsqueda -->
+        <form action="/consulta/buscar" method="get" class="d-flex justify-content-center mb-4">
+            <input type="text" name="cedula" class="form-control w-50 me-2" placeholder="Ingrese cédula del paciente..." required>
+            <button type="submit" class="btn btn-success">Buscar</button>
+        </form>
+
+        <!-- Mostrar datos e imágenes si existen -->
+        <div th:if="${paciente}">
+            <h4 class="text-secondary mb-4" th:text="'Paciente: ' + ${paciente.nombre}"></h4>
+
+            <div th:each="entry, iterStat : ${imagenesPorFecha}" class="mb-4">
+                <!--  Fecha clickable -->
+                <h4 class="fecha-btn" th:attr="data-fecha=${iterStat.index}"
+                    th:text="${#temporals.format(entry.key, 'dd/MM/yyyy')}"></h4>
+
+                <!--  Contenedor de imágenes (inicialmente oculto) -->
+                <div class="imagenes-fecha d-none" th:id="'imagenes-' + ${iterStat.index}">
+                    <div class="galeria-grid">
+                    <div class="card shadow-sm" th:each="img, iter : ${entry.value}">
+                        <img th:src="@{'/' + ${img.rutaArchivo}}" class="card-img-top"
+                            th:attr="data-bs-toggle='modal', data-bs-target='#modalCarrusel-' + ${iterStat.index}"
+                            th:attrappend="data-index=${iter.index}">
+                        <div class="card-body p-2">
+                        <p class="small text-muted" th:text="${img.nombreArchivo}"></p>
                         </div>
-                        </div>
-                        <button class="carousel-control-prev" type="button"
-                                th:attr="data-bs-target='#carousel-' + ${iterStat.index}"
-                                data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon"></span>
-                        </button>
-                        <button class="carousel-control-next" type="button"
-                                th:attr="data-bs-target='#carousel-' + ${iterStat.index}"
-                                data-bs-slide="next">
-                        <span class="carousel-control-next-icon"></span>
-                        </button>
                     </div>
                     </div>
                 </div>
+
+                <!--  Modal con carrusel -->
+                <div class="modal fade" th:id="'modalCarrusel-' + ${iterStat.index}" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content bg-dark text-white">
+                        <div class="modal-body p-0 position-relative">
+                        <button type="button" class="btn-close btn-close-white position-absolute end-0 m-3" data-bs-dismiss="modal"></button>
+                        <div th:id="'carousel-' + ${iterStat.index}" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                            <div class="carousel-item"
+                                th:each="img2, iter2 : ${entry.value}"
+                                th:classappend="${iter2.index == 0} ? 'active'">
+                                <img th:src="@{'/' + ${img2.rutaArchivo}}" class="d-block w-100"
+                                    style="max-height:80vh;object-fit:contain;">
+                            </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button"
+                                    th:attr="data-bs-target='#carousel-' + ${iterStat.index}"
+                                    data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                            </button>
+                            <button class="carousel-control-next" type="button"
+                                    th:attr="data-bs-target='#carousel-' + ${iterStat.index}"
+                                    data-bs-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                            </button>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Modal de error -->
-    <div class="modal fade" id="errorModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-center p-4">
-            <h5 class="text-danger" th:text="${errorMsg}"></h5>
+        <!-- Modal de error -->
+        <div class="modal fade" id="errorModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4">
+                <h5 class="text-danger" th:text="${errorMsg}"></h5>
+            </div>
+            </div>
         </div>
-        </div>
-    </div>
     </div>
 
 <!-- Script para mostrar el modal de error -->

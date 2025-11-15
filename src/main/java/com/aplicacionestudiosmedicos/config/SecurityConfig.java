@@ -42,6 +42,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // Desactivar CSRF solo en desarrollo
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
+                    "/",
                     "/login",
                     "/auth-login",
                     "/css/**",

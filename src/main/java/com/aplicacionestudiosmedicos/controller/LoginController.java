@@ -24,6 +24,10 @@ public class LoginController {
     public String mostrarLogin() {
         return "login";
     }
+    @GetMapping("/")
+    public String redirigir() {
+        return "redirect:/consulta";
+    }
 
     @PostMapping("/auth-login")
     @ResponseBody
