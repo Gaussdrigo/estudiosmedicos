@@ -21,6 +21,8 @@ public class EstudiosmedicosApplication {
             if (usuarioService.buscarPorNombre("doctor1") == null) {
                 usuarioService.registrarUsuario("doctor1", "1234");
                 System.out.println("✅ Usuario 'doctor1' creado con contraseña encriptada.");
+            }else{
+                System.out.println("⚠️ Usuario 'doctor1' ya existe. No se creó un nuevo usuario.");
             }
         };
     }
