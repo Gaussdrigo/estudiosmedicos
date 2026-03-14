@@ -13,7 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:uploads/");
 
-        // ✅ Sirve los PDF generados
+        //  Sirve los PDF generados
         registry.addResourceHandler("/pdfs/**")
                 .addResourceLocations("file:pdfs/");
     }
