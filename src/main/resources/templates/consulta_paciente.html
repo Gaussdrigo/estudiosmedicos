@@ -26,7 +26,6 @@
       align-items: flex-start;
       padding: 12px 24px 0 24px;
       position: relative;
-      z-index: 2;
     }
 
     .logo-left img {
@@ -52,7 +51,6 @@
 
     .main-content {
       position: relative;
-      z-index: 2;
       text-align: center;
       padding: 30px 20px 40px 20px;
     }
@@ -74,15 +72,16 @@
       min-width: 280px;
     }
 
-    .background-image-section {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 58vh;
-      background: url('/img/camilla.jpg') center bottom / cover no-repeat;
-      z-index: 1;
-    }
+  .background-image-section {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 58vh;
+    background: url('/img/camilla.jpg') center bottom / cover no-repeat;
+    opacity: 0.18;
+    z-index: -1;
+  }
 
     .fecha-btn {
       cursor: pointer;
@@ -193,9 +192,13 @@
 
         <!-- Formulario de búsqueda -->
         <div class="search-box mb-4">
-          <form action="/consulta/buscar" method="get">
-            <input type="text" name="cedula" class="form-control" placeholder="Ingrese cédula del paciente..." required>
-            <button type="submit" class="btn btn-success">Buscar</button>
+          <form action="/consulta/buscar" method="get" class="d-flex justify-content-center mb-4">
+            <input id="cedulaInput" type="text" name="cedula" class="form-control w-50 me-2"
+                  placeholder="Ingrese cédula del paciente..." required>
+            <button type="submit" class="btn btn-success me-2">Buscar</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="limpiarBusqueda()">
+              Limpiar
+            </button>
           </form>
         </div>
 
@@ -226,7 +229,11 @@
               <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content bg-dark text-white">
                   <div class="modal-body p-0 position-relative">
-                    <button type="button" class="btn-close btn-close-white position-absolute end-0 m-3" data-bs-dismiss="modal"></button>
+                    <button type="button"
+                      class="btn-close btn-close-white position-absolute top-0 end-0 m-3"
+                      style="z-index: 1060;"
+                      data-bs-dismiss="modal">
+                    </button>
                     <div th:id="'carousel-' + ${iterStat.index}" class="carousel slide" data-bs-ride="carousel">
                       <div class="carousel-inner">
                         <div class="carousel-item"
@@ -295,6 +302,10 @@
         });
       });
     });
+    function limpiarBusqueda() {
+      document.getElementById("cedulaInput").value = "";
+      window.location.href = "/consulta";
+    }
   </script>
 
 </body>
