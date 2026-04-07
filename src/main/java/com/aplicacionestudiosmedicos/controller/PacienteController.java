@@ -1,5 +1,26 @@
 package com.aplicacionestudiosmedicos.controller;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.aplicacionestudiosmedicos.entities.Paciente;
 import com.aplicacionestudiosmedicos.entities.PacienteImagen;
 import com.aplicacionestudiosmedicos.service.PacienteService;
@@ -7,21 +28,6 @@ import com.aplicacionestudiosmedicos.service.PdfService;
 import com.aplicacionestudiosmedicos.service.QrService;
 
 import jakarta.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/pacientes")
@@ -54,12 +60,21 @@ public class PacienteController {
     @PostMapping("/guardar")
     public String guardarPaciente(@ModelAttribute Paciente paciente, RedirectAttributes redirectAttrs) {
         try {
-            pacienteService.guardar(paciente);
+            Paciente pacienteGuardado = pacienteService.guardar(paciente);
             redirectAttrs.addFlashAttribute("msg", "Paciente registrado correctamente ✅");
+            return "redirect:/pacientes/" + pacienteGuardado.getId() + "/imagenes";
+
         } catch (IllegalArgumentException e) {
+            Optional<Paciente> pacienteExistente = pacienteService.obtenerPorCedula(paciente.getCedula());
+
+            if (pacienteExistente.isPresent()) {
+                redirectAttrs.addFlashAttribute("msg", "El paciente ya existe. Se muestran sus imágenes.");
+                return "redirect:/pacientes/" + pacienteExistente.get().getId() + "/imagenes";
+            }
+
             redirectAttrs.addFlashAttribute("errorMsg", e.getMessage());
+            return "redirect:/pacientes/nuevo";
         }
-        return "redirect:/pacientes/nuevo";
     }
     //  Eliminar paciente
     @PostMapping("/{id}/eliminar")
