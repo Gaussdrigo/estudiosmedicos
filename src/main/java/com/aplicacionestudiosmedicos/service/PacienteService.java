@@ -1,33 +1,33 @@
 package com.aplicacionestudiosmedicos.service;
 
-import com.aplicacionestudiosmedicos.entities.Paciente;
-import com.aplicacionestudiosmedicos.entities.PacienteImagen;
-import com.aplicacionestudiosmedicos.repositories.PacienteImagenRepository;
-import com.aplicacionestudiosmedicos.repositories.PacienteRepository;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
+import com.aplicacionestudiosmedicos.entities.Paciente;
+import com.aplicacionestudiosmedicos.entities.PacienteImagen;
+import com.aplicacionestudiosmedicos.repositories.PacienteImagenRepository;
+import com.aplicacionestudiosmedicos.repositories.PacienteRepository;
+import com.aplicacionestudiosmedicos.service.storage.ArchivoStorageService;
+import com.aplicacionestudiosmedicos.service.storage.StoredFile;
 
 @Service
 public class PacienteService {
-
-    private static final String UPLOAD_DIR = "uploads/";
 
     @Autowired
     private PacienteRepository pacienteRepository;
 
     @Autowired
     private PacienteImagenRepository imagenRepository;
+
+    @Autowired
+    private ArchivoStorageService archivoStorageService;
 
     //  CRUD de Paciente
     public List<Paciente> listarTodos() {
@@ -74,19 +74,17 @@ public class PacienteService {
         Paciente paciente = obtenerPorId(pacienteId);
         if (paciente == null) throw new IOException("Paciente no encontrado");
 
-        // Crear carpeta uploads/ si no existe
-        File carpeta = new File(UPLOAD_DIR);
-        if (!carpeta.exists()) carpeta.mkdirs();
-
-        // Ruta del archivo
-        String ruta = UPLOAD_DIR + file.getOriginalFilename();
-        Files.copy(file.getInputStream(), Paths.get(ruta), StandardCopyOption.REPLACE_EXISTING);
+        StoredFile archivoSubido = archivoStorageService.uploadImage(file, "estudiosmedicos/imagenes");
 
         // Guardar información en la base
         PacienteImagen imagen = new PacienteImagen();
         imagen.setPaciente(paciente);
         imagen.setNombreArchivo(file.getOriginalFilename());
-        imagen.setRutaArchivo(ruta);
+        imagen.setRutaArchivo(archivoSubido.secureUrl());
+        imagen.setPublicUrl(archivoSubido.secureUrl());
+        imagen.setPublicId(archivoSubido.publicId());
+        imagen.setResourceType(archivoSubido.resourceType());
+        imagen.setStorageProvider(archivoStorageService.getClass().getSimpleName());
         imagenRepository.save(imagen);
     }
 

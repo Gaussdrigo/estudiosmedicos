@@ -27,8 +27,6 @@ import com.aplicacionestudiosmedicos.service.PacienteService;
 import com.aplicacionestudiosmedicos.service.PdfService;
 import com.aplicacionestudiosmedicos.service.QrService;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 @Controller
 @RequestMapping("/pacientes")
 public class PacienteController {
@@ -122,8 +120,7 @@ public class PacienteController {
     public String generarQrYMostrar(
             @PathVariable Long id,
             @RequestParam("fecha") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
-            Model model,
-            HttpServletRequest request) throws Exception {
+            Model model) throws Exception {
 
         // 1. Verificar paciente
         Paciente paciente = pacienteService.obtenerPorId(id);
@@ -133,7 +130,7 @@ public class PacienteController {
         }
 
         // 2. Generar PDF (servicio devuelve una URL accesible)
-        String pdfUrl = pdfService.generarPdfEstudios(paciente, fecha, request);
+        String pdfUrl = pdfService.generarPdfEstudios(paciente, fecha);
 
         // 3. Generar QR en base64 que representa el enlace al PDF
         String qrBase64 = qrService.generarQrBase64(pdfUrl);
