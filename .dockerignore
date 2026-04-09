@@ -1,0 +1,20 @@
+.git
+.gitignore
+.vscode
+.idea
+
+# Build output
+target/
+
+# Local runtime data and generated files
+uploads/
+pdfs/
+
+# Maven wrapper and local Maven metadata not needed in image
+.mvn/
+mvnw
+mvnw.cmd
+
+# Docs and misc
+README.md
+*.log

@@ -68,21 +68,17 @@ Estrategia usada por la app: una sola variable (`CLOUDINARY_URL`).
 2. Conectar el repositorio de GitHub.
 3. Configurar:
 
-- Runtime: `Java`
-- Build Command:
-
-```bash
-./mvnw clean package -DskipTests
-```
-
-- Start Command:
-
-```bash
-java -jar target/estudiosmedicos-0.0.1-SNAPSHOT.jar
-```
+- Runtime: `Docker`
+- Dockerfile Path: `./Dockerfile`
+- Root Directory: vacio (raiz del repo)
 
 4. Agregar todas las variables del punto 2.
 5. Deploy.
+
+Notas para Docker en Render:
+
+- No necesitas `Build Command` ni `Start Command` en Render; los define el `Dockerfile`.
+- `server.port=${PORT:8080}` ya esta configurado en la app, por lo que Render puede inyectar el puerto automaticamente.
 
 ## 6. Verificacion Post Deploy (Smoke Test)
 
