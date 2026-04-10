@@ -24,8 +24,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.aplicacionestudiosmedicos.entities.Paciente;
 import com.aplicacionestudiosmedicos.entities.PacienteImagen;
 import com.aplicacionestudiosmedicos.service.PacienteService;
-import com.aplicacionestudiosmedicos.service.PdfService;
-import com.aplicacionestudiosmedicos.service.QrService;
 
 @Controller
 @RequestMapping("/pacientes")
@@ -33,12 +31,6 @@ public class PacienteController {
 
     @Autowired
     private PacienteService pacienteService;
-
-    @Autowired
-    private PdfService pdfService;
-
-    @Autowired
-    private QrService qrService;
 
     @GetMapping
     public String listarPacientes(Model model) {
@@ -120,7 +112,7 @@ public class PacienteController {
     public String generarQrYMostrar(
             @PathVariable Long id,
             @RequestParam("fecha") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
-            Model model) throws Exception {
+            Model model) {
 
         // 1. Verificar paciente
         Paciente paciente = pacienteService.obtenerPorId(id);
@@ -129,17 +121,10 @@ public class PacienteController {
             return "error";
         }
 
-        // 2. Generar PDF (servicio devuelve una URL accesible)
-        String pdfUrl = pdfService.generarPdfEstudios(paciente, fecha);
-
-        // 3. Generar QR en base64 que representa el enlace al PDF
-        String qrBase64 = qrService.generarQrBase64(pdfUrl);
-
-        // 4. Pasar datos a la vista
+        // Funcionalidad temporalmente deshabilitada para evitar generar y almacenar PDF/QR.
         model.addAttribute("paciente", paciente);
         model.addAttribute("fecha", fecha);
-        model.addAttribute("qr", qrBase64);
-        model.addAttribute("pdfUrl", pdfUrl);
+        model.addAttribute("msg", "La generacion de PDF y QR esta temporalmente deshabilitada.");
 
         return "ver_qr"; // nombre de la vista
     }

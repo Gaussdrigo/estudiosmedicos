@@ -83,11 +83,12 @@
         <h4 class="text-primary text-center"
             th:text="${#temporals.format(entry.key, 'dd/MM/yyyy')}"></h4>
 
-        <!-- Botón QR -->
-        <a th:href="@{'/pacientes/' + ${paciente.id} + '/qr'(fecha=${entry.key})}"
-           class="btn btn-outline-success btn-sm btn-mobile-full">
-          Generar QR
-        </a>
+        <!-- Boton QR temporalmente deshabilitado -->
+        <button type="button"
+                class="btn btn-outline-secondary btn-sm btn-mobile-full"
+                disabled>
+          QR temporalmente deshabilitado
+        </button>
       </div>
 
       <div class="galeria-grid">
