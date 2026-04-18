@@ -129,7 +129,8 @@
   .rx-modal-body {
     padding: 0;
     position: relative;
-    overflow: hidden;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .rx-carousel {
@@ -161,6 +162,7 @@
     height: auto;
     object-fit: contain;
     margin: 0 auto;
+    touch-action: manipulation;
   }
 
   @media (max-width: 768px) {
@@ -216,7 +218,7 @@
     .modal-rx-img {
       max-width: 96vw;
       max-height: 73vh;
-      touch-action: pan-y pinch-zoom;
+      touch-action: pinch-zoom;
     }
   }
 
@@ -303,8 +305,7 @@
                             style="z-index: 1060;"
                             data-bs-dismiss="modal">
                     </button>
-
-                    <div th:id="'carousel-' + ${iterStat.index}" class="carousel slide rx-carousel" data-bs-interval="false">
+                    <div th:id="'carousel-' + ${iterStat.index}" class="carousel slide rx-carousel" data-bs-interval="false"  data-bs-touch="false">
                       <div class="carousel-inner rx-carousel-inner">
                         <div class="carousel-item"
                             th:each="img2, iter2 : ${entry.value}"
