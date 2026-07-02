@@ -32,6 +32,9 @@ public class EstudiosmedicosApplication {
             } else {
                 System.out.println("⚠️ El usuario admin inicial ya existe. No se creó un nuevo usuario.");
             }
+            Files.createDirectories(Paths.get("uploads"));
+            Files.createDirectories(Paths.get("pdfs"));
+            System.out.println("✅ Carpetas verificadas.");
         };
     }
 }
